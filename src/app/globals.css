@@ -54,9 +54,9 @@
 }
 
 :root {
-  --background: #ffffff;
+  --background: #fcfcfc;
   --foreground: #1e1e1e;
-  --card: #ffffff;
+  --card: #fcfcfc;
   --card-foreground: #1e1e1e;
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
@@ -70,6 +70,7 @@
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --border: #e7e5e4;
+  --grid: #d6d3d1;
   --input: oklch(0.922 0 0);
   --ring: #a3a3a3;
   --chart-1: oklch(0.87 0 0);
@@ -78,7 +79,7 @@
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --radius: 0.625rem;
-  --faint: #767676; /* 4.5:1 on white: AA for small text */
+  --faint: #737373; /* 4.6:1 on #fcfcfc: AA for small text */
   --live: #16a34a;
   --mark: #1e1e1e;
   --sidebar: oklch(0.985 0 0);
@@ -92,12 +93,12 @@
 }
 
 .dark {
-  --faint: #767676; /* 4.6:1 on black */
+  --faint: #787878; /* 4.6:1 on #050505 */
   --live: #22c55e;
   --mark: #e5e5e5;
-  --background: #000000;
+  --background: #050505;
   --foreground: #f5f5f5;
-  --card: #000000;
+  --card: #050505;
   --card-foreground: #f5f5f5;
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
@@ -111,6 +112,7 @@
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --border: #262626;
+  --grid: #262626;
   --input: oklch(1 0 0 / 15%);
   --ring: #737373;
   --chart-1: oklch(0.87 0 0);
@@ -138,6 +140,11 @@
   html {
     @apply font-sans;
   }
+  /* Tailwind v4 resets buttons to the default cursor */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
 }
 /* Dashed 40px grid from the Penpot frames: 1px lines, 3px dash / 5px gap */
 @layer components {
@@ -149,10 +156,23 @@
     content: "";
     position: absolute;
     inset: -4000px; /* multiple of 40 so lines stay aligned to the bento's edges */
-    z-index: -1;
+    z-index: -2; /* under the dissolve field */
     pointer-events: none;
-    background-color: var(--border);
+    background-color: var(--grid); /* own token: light theme needs darker dashes than --border */
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cpath d='M.5 0V40M0 .5H40' stroke='%23000' stroke-dasharray='3 5'/%3E%3C/svg%3E") 0 0 / 40px 40px;
+  }
+  /* Fixed layouts: the grid stops where the dissolve field ends (lib/dissolve FIELD) */
+  .bento-field::before {
+    inset: -280px -480px;
+    /* dashes, then a soft fade toward the field's edges so the dissolve cells don't end on a hard line */
+    mask-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cpath d='M.5 0V40M0 .5H40' stroke='%23000' stroke-dasharray='3 5'/%3E%3C/svg%3E"),
+      linear-gradient(to right, transparent, #000 480px, #000 calc(100% - 480px), transparent),
+      linear-gradient(to bottom, transparent, #000 280px, #000 calc(100% - 280px), transparent);
+    mask-size: 40px 40px, 100% 100%, 100% 100%;
+    mask-position: 0 0;
+    mask-repeat: repeat, no-repeat, no-repeat;
+    mask-composite: intersect;
   }
   .card {
     background: var(--card);
@@ -176,7 +196,45 @@
   --faint: #a3a3a3;
 }
 .dark .card-riva {
-  background: radial-gradient(125% 125% at 50% 10%, #fafafa 30%, #bbf7d0 75%, #4ade80 100%);
+  background: radial-gradient(125% 125% at 50% 10%, #fafafa 34%, #b0f3c8 59%, #17bf51 77%);
   color: #0a0a0a;
-  --faint: #525252;
+  --faint: #737373;
+}
+
+/* Sun <-> moon: a quick cross-fade */
+.theme-icon > * {
+  transition: opacity 150ms ease;
+}
+.theme-icon [data-icon="moon"],
+.dark .theme-icon [data-icon="sun"] {
+  opacity: 0;
+}
+.dark .theme-icon [data-icon="moon"] {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-icon > * {
+    transition: none;
+  }
+}
+
+/* Theme switch: the new theme grows out of the centre as a viewport-shaped rectangle
+   (adapted from chanhdai.com/components/theme-toggle-effect). clip-path inset, not an SVG mask,
+   so nothing is re-rasterised per frame */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) {
+    animation: none;
+    z-index: -1;
+  }
+  ::view-transition-new(root) {
+    animation: theme-rect-reveal 0.6s cubic-bezier(0.32, 0.72, 0, 1) both;
+  }
+  @keyframes theme-rect-reveal {
+    from {
+      clip-path: inset(50%);
+    }
+    to {
+      clip-path: inset(0);
+    }
+  }
 }

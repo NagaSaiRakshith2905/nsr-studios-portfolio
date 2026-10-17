@@ -1,7 +1,9 @@
 import type { CSSProperties } from "react"
 import { cn } from "@/lib/utils"
 import { cards, site, type CardId, type CardContent, type Item } from "@/lib/content"
-import type { Mark, Placed, Stacked, TitleSize } from "@/lib/layouts"
+import type { Lines, Mark, Placed, Stacked, TitleSize } from "@/lib/layouts"
+import { FIELD } from "@/lib/dissolve"
+import { DissolveCanvas } from "@/components/dissolve-canvas"
 import { ThemeToggle } from "@/components/theme-toggle"
 
 const titleSizes: Record<TitleSize, string> = {
@@ -33,7 +35,10 @@ function Card({ id, size, display = 80, className, style }: {
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
           <h1 className="font-hero leading-none tracking-[0.125em]" style={{ fontSize: display }}>{site.name}</h1>
-          <p className={cn(titleSizes.base, "font-medium leading-[1.3] tracking-[-0.01em]")}>{site.fullName}</p>
+          <p className={cn(titleSizes.base, "font-medium leading-[1.3] tracking-[-0.01em]")}>
+            {site.fullName.replace(/\S+$/, "")}
+            <span className="underline decoration-wavy decoration-1 underline-offset-4">{site.fullName.split(" ").at(-1)}</span>
+          </p>
         </div>
         <p className="text-[13px] leading-[1.55] text-muted-foreground text-balance">{site.intro}</p>
       </div>
@@ -96,9 +101,10 @@ function Card({ id, size, display = 80, className, style }: {
     )
   }
 
-  const justify = c.kind === "toggle" ? "items-center justify-center" : c.kind === "nav" ? "justify-start" : top ? "justify-between" : "justify-end"
+  // The toggle button fills its card edge to edge, so the whole card is the hit area
+  const justify = c.kind === "toggle" ? "" : c.kind === "nav" ? "justify-start" : top ? "justify-between" : "justify-end"
   return (
-    <article className={cn("card flex flex-col p-6", justify, c.kind === "riva" && "card-riva", className)} style={style}>
+    <article className={cn("card flex flex-col", c.kind !== "toggle" && "p-6", justify, c.kind === "riva" && "card-riva", className)} style={style}>
       {top}
       {main}
     </article>
@@ -131,12 +137,34 @@ function Marks({ outer = [], inner = [] }: { outer?: Mark[]; inner?: Mark[] }) {
   )
 }
 
+// Behind the cards: patches of page colour that dissolve the dashed grid, then the blueprint lines,
+// each fading from the bento's edge out to the end of the field.
+function Field({ w, h, lines }: { w: number; h: number; lines: Lines }) {
+  const fade = (dir: string) => `linear-gradient(to ${dir}, var(--border), transparent)`
+  return (
+    <div aria-hidden className="pointer-events-none absolute z-[-1]" style={{ inset: `-${FIELD.y}px -${FIELD.x}px` }}>
+      <DissolveCanvas w={w} h={h} />
+      {[
+        ...lines.y.flatMap((y): CSSProperties[] => [
+          { left: 0, top: FIELD.y + y - 0.5, width: FIELD.x, height: 1, background: fade("left") },
+          { right: 0, top: FIELD.y + y - 0.5, width: FIELD.x, height: 1, background: fade("right") },
+        ]),
+        ...lines.x.flatMap((x): CSSProperties[] => [
+          { left: FIELD.x + x - 0.5, top: 0, width: 1, height: FIELD.y, background: fade("top") },
+          { left: FIELD.x + x - 0.5, bottom: 0, width: 1, height: FIELD.y, background: fade("bottom") },
+        ]),
+      ].map((style, i) => <span key={i} className="absolute" style={style} />)}
+    </div>
+  )
+}
+
 export function FixedBento({ layout, className }: {
-  layout: { w: number; h: number; cards: Placed[]; outer: Mark[]; inner: Mark[] }
+  layout: { w: number; h: number; cards: Placed[]; outer: Mark[]; inner: Mark[]; lines: Lines }
   className?: string
 }) {
   return (
-    <div className={cn("bento shrink-0", className)} style={{ width: layout.w, height: layout.h }}>
+    <div className={cn("bento bento-field shrink-0", className)} style={{ width: layout.w, height: layout.h }}>
+      <Field w={layout.w} h={layout.h} lines={layout.lines} />
       {layout.cards.map(({ id, x, y, w, h, size, display }) => (
         <Card key={id} id={id} size={size} display={display} className="absolute" style={{ left: x, top: y, width: w, height: h }} />
       ))}

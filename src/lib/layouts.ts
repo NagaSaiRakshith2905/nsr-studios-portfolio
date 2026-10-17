@@ -4,6 +4,8 @@ import type { CardId } from "./content"
 export type TitleSize = "sm" | "base" | "md" | "lg"
 export type Placed = { id: CardId; x: number; y: number; w: number; h: number; size?: TitleSize; display?: 80 | 120 }
 export type Mark = [x: number, y: number, w: number, h: number]
+// Blueprint lines: card edges carried out past the bento into the page
+export type Lines = { x: number[]; y: number[] }
 
 export const desktop = {
   w: 960,
@@ -25,6 +27,7 @@ export const desktop = {
   ] satisfies Placed[] as Placed[],
   outer: [[276, -2, 8, 4], [716, -2, 8, 4], [-2, 276, 4, 8], [156, 518, 8, 4], [576, 518, 8, 4]] as Mark[],
   inner: [[396, 159, 8, 2], [399, 156, 2, 8], [276, 279, 8, 2], [576, 279, 8, 2], [159, 434, 2, 8], [439, 434, 2, 8], [719, 156, 2, 8]] as Mark[],
+  lines: { x: [0, 280, 400, 720, 960], y: [0, 160, 280, 520] } as Lines,
 }
 
 // Portrait: not in Penpot. The desktop cards regrouped on the 40px grid.
@@ -47,6 +50,7 @@ export const portrait = {
   ] satisfies Placed[] as Placed[],
   outer: [[476, -2, 8, 4], [-2, 316, 4, 8], [838, 156, 4, 8], [-2, 716, 4, 8], [476, 998, 8, 4]] as Mark[],
   inner: [[479, 156, 2, 8], [359, 476, 2, 8], [596, 479, 8, 2], [476, 879, 8, 2]] as Mark[],
+  lines: { x: [0, 480, 840], y: [0, 320, 720, 1000] } as Lines,
 }
 
 // Phones: not in Penpot. Derived from the portrait frame as a 2-column grid of 40px rows.
