@@ -1,86 +1,78 @@
 // All site copy lives here. Edit text and links in this file.
 export const site = {
   name: "NSR",
-  intro: "Developer learning to build with AI, one project at a time.",
+  fullName: "Naga Sai Rakshith",
+  intro: "I design and build apps end to end. Now learning to build with AI.",
   email: "email@domain.com",
   links: [
     { label: "GitHub", href: "https://github.com/" },
     { label: "LinkedIn", href: "https://www.linkedin.com/" },
     { label: "X", href: "https://x.com/" },
+    { label: "Email", href: "mailto:email@domain.com" },
   ],
   nav: [
     { label: "Work", href: "/", current: true },
     { label: "About" },
     { label: "Notes" },
-    { label: "Contact", href: "mailto:email@domain.com" },
   ],
-};
+}
+
+// A row in a list card. href starting with "/" stays on the site (⟶); anything else leaves it (↗).
+export type Item = { label: string; href?: string; prefix?: string; meta?: string }
 
 export type CardContent = {
-  label?: string;
-  title?: string;
-  body?: string;
-  meta?: string;
-  live?: boolean;
-  project?: boolean;
-  kind?: "hero" | "nav" | "email" | "links";
-};
-
-// Non-breaking spaces keep the path from wrapping anywhere but before an arrow.
-const path = "Next.js -> Spring Boot -> Python";
+  label?: string
+  title?: string
+  body?: string
+  meta?: string
+  live?: boolean
+  project?: boolean
+  items?: Item[]
+  more?: Item
+  link?: Item
+  kind?: "hero" | "nav" | "toggle" | "links" | "riva" | "empty"
+}
 
 export const cards = {
   hero: { kind: "hero" },
+  nav: { kind: "nav" },
+  toggle: { kind: "toggle" },
   now: {
     label: "Now",
-    title: "Building Persona Chat",
-    meta: "● In progress",
+    title: "Shipping Riva",
+    meta: "● Public release Nov 8",
     live: true,
   },
-  focus: { label: "Focus", title: "AI apps,\nend to end" },
-  focusLong: { label: "Focus", title: "Learning to build AI apps end to end" },
-  persona: {
+  empty: { kind: "empty" },
+  riva: {
     label: "01",
-    title: "Persona Chat",
-    body: "Chat with AI personas, each with its own voice. Replies stream in as they're written.",
-    meta: "Next.js, AI SDK",
+    title: "Riva",
+    body: "Encrypted notes, passwords and files you share with family and friends.",
+    meta: "Flutter, Next.js, Hono",
     project: true,
   },
-  springBoot: {
-    label: "02",
-    title: "Spring Boot",
-    body: "Next on the learning path.",
-    meta: "Up next",
-    project: true,
+  tryRiva: {
+    label: "Try Riva",
+    kind: "riva",
+    link: { label: "rivaspaces.com", href: "https://rivaspaces.com" },
   },
-  python: {
-    label: "03",
-    title: "Python",
-    body: "After Spring Boot.",
-    meta: "Later",
-    project: true,
+  projects: {
+    label: "Projects",
+    items: [{ prefix: "01", label: "Riva", href: "/projects/riva" }],
+    more: { label: "View All", href: "/projects" },
   },
-  language: { label: "Language", title: "TypeScript" },
-  framework: { label: "Framework", title: "Next.js" },
-  path: { label: "Path", title: path },
-  toolkit: {
-    label: "Toolkit",
-    body: "shadcn/ui, AI SDK\nDrizzle, Better Auth",
+  caseStudies: {
+    label: "Case Studies",
+    items: [{ label: "Build logs", meta: "Soon" }],
   },
-  nav: { kind: "nav" },
-  contact: { label: "Contact", kind: "email" },
-  elsewhere: { label: "Elsewhere", kind: "links", meta: "© 2026" },
-  elsewhereInline: { label: "Elsewhere", kind: "links" },
-  notes: {
-    label: "Notes",
-    title: "Coming soon",
-    body: "What I learn building each project.",
+  stack: {
+    label: "Stack",
+    items: ["Flutter", "Next.js", "Hono", "Cloudflare", "Postgres"].map((label) => ({ label })),
+    more: { label: "View All", href: "/stack" },
   },
-  colophon: {
-    label: "Colophon",
-    body: "Set in Geist Mono.\nDesigned in Penpot.",
-    meta: "© 2026 NSR",
-  },
-} satisfies Record<string, CardContent>;
+  elsewhere: { label: "Elsewhere", kind: "links" },
+  colophon: { body: "Designed in Penpot.\nBuilt in Next.js" },
+  copyright: { meta: "© 2026" },
+} satisfies Record<string, CardContent>
 
-export type CardId = keyof typeof cards;
+export type CardId = keyof typeof cards

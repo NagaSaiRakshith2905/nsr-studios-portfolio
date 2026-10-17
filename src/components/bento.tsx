@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react"
 import { cn } from "@/lib/utils"
-import { cards, site, type CardId, type CardContent } from "@/lib/content"
+import { cards, site, type CardId, type CardContent, type Item } from "@/lib/content"
 import type { Mark, Placed, Stacked, TitleSize } from "@/lib/layouts"
 import { ThemeToggle } from "@/components/theme-toggle"
 
@@ -22,14 +22,19 @@ function Card({ id, size, display = 80, className, style }: {
   style?: CSSProperties
 }) {
   const c: CardContent = cards[id]
-  const top = c.kind === "nav" ? <ThemeToggle /> : c.label && <p className="font-pixel-circle text-[15px] leading-[1.3] text-faint">{c.label}</p>
+  // 12px puts Circle Grid's 0.125em dot pitch on 3 device px at 2x; 0.125em tracking = one empty dot column
+  const top = c.label && <p className="font-hero text-[12px] leading-[1.3] tracking-[0.125em] uppercase text-faint">{c.label}</p>
   const titleClass = cn(titleSizes[size ?? (c.project ? "md" : "base")], "font-medium leading-[1.3] tracking-[-0.01em] text-balance whitespace-pre-line")
+  const listClass = "flex flex-col gap-1 text-[13px] font-medium leading-[1.3] tracking-[-0.01em]"
 
   let main
   if (c.kind === "hero") {
     main = (
       <div className="flex flex-col gap-4">
-        <h1 className="font-pixel-circle leading-none" style={{ fontSize: display }}>{site.name}</h1>
+        <div className="flex flex-col gap-2">
+          <h1 className="font-hero leading-none tracking-[0.125em]" style={{ fontSize: display }}>{site.name}</h1>
+          <p className={cn(titleSizes.base, "font-medium leading-[1.3] tracking-[-0.01em]")}>{site.fullName}</p>
+        </div>
         <p className="text-[13px] leading-[1.55] text-muted-foreground text-balance">{site.intro}</p>
       </div>
     )
@@ -45,23 +50,39 @@ function Card({ id, size, display = 80, className, style }: {
                   {n.label}
                 </a>
               ) : (
-                <span className="text-faint">
-                  {n.label} <span className="font-pixel-circle text-[11px]">soon</span>
-                </span>
+                <span className="text-faint">{n.label}</span>
               )}
             </li>
           ))}
         </ul>
       </nav>
     )
-  } else {
+  } else if (c.kind === "toggle") {
+    main = <ThemeToggle />
+  } else if (c.kind === "riva") {
+    main = c.link && <ItemLink item={c.link} className={titleClass} />
+  } else if (c.items) {
+    main = (
+      <ul className={listClass}>
+        {c.items.map((item) => (
+          <li key={item.label} className="flex items-baseline justify-between gap-2">
+            <span>
+              {item.prefix && <span className="mr-2 text-muted-foreground">{item.prefix}</span>}
+              {item.href ? <ItemLink item={item} /> : item.label}
+            </span>
+            {item.meta && <span className="text-[12px] font-normal text-muted-foreground">{item.meta}</span>}
+          </li>
+        ))}
+        {c.more && <li className="mt-2"><ItemLink item={c.more} /></li>}
+      </ul>
+    )
+  } else if (c.kind !== "empty") {
     const Title = c.project ? "h2" : "p"
     main = (
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          {c.kind === "email" && <a href={`mailto:${site.email}`} className={cn(titleClass, link, "w-fit")}>{site.email}</a>}
           {c.kind === "links" && (
-            <ul className={cn("flex text-[13px] font-medium leading-[1.3] tracking-[-0.01em]", id === "elsewhereInline" ? "flex-wrap gap-x-10" : "flex-col")}>
+            <ul className={cn(listClass, "gap-0")}>
               {site.links.map((l) => (
                 <li key={l.label}><a href={l.href} className={link}>{l.label}</a></li>
               ))}
@@ -75,18 +96,30 @@ function Card({ id, size, display = 80, className, style }: {
     )
   }
 
+  const justify = c.kind === "toggle" ? "items-center justify-center" : c.kind === "nav" ? "justify-start" : top ? "justify-between" : "justify-end"
   return (
-    <article className={cn("card flex flex-col p-6", top ? "justify-between" : "justify-end", className)} style={style}>
+    <article className={cn("card flex flex-col p-6", justify, c.kind === "riva" && "card-riva", className)} style={style}>
       {top}
       {main}
     </article>
   )
 }
 
+// Same-site links get a long arrow; links that leave the site get a diagonal one.
+function ItemLink({ item, className }: { item: Item; className?: string }) {
+  const external = !item.href?.startsWith("/")
+  return (
+    <a href={item.href} className={cn(link, "no-underline", className)} {...(external && { target: "_blank", rel: "noreferrer" })}>
+      {item.label} <span aria-hidden>{external ? "↗" : "⟶"}</span>
+    </a>
+  )
+}
+
 function Marks({ outer = [], inner = [] }: { outer?: Mark[]; inner?: Mark[] }) {
   const corner = "absolute size-1 bg-mark"
   return (
-    <div aria-hidden className="pointer-events-none">
+    // absolute: otherwise the phone grid gives this wrapper its own empty row
+    <div aria-hidden className="pointer-events-none absolute inset-0">
       <span className={cn(corner, "-left-0.5 -top-0.5")} />
       <span className={cn(corner, "-right-0.5 -top-0.5")} />
       <span className={cn(corner, "-left-0.5 -bottom-0.5")} />

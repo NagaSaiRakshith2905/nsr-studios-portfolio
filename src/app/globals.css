@@ -10,6 +10,7 @@
   --font-sans: var(--font-geist-mono);
   --font-mono: var(--font-geist-mono);
   --font-pixel-circle: var(--font-geist-pixel-circle);
+  --font-hero: var(--font-circle-grid);
   --font-heading: var(--font-geist-mono);
   --color-faint: var(--faint);
   --color-live: var(--live);
@@ -166,4 +167,16 @@
     grid-auto-rows: 40px;
     grid-auto-flow: row dense;
   }
+}
+
+/* Try Riva: the one inverted card, with a green glow (light: dark card, dark: light card) */
+.card-riva {
+  background: radial-gradient(125% 125% at 50% 10%, #1e1e1e 30%, #0b5a16 75%, #16a34a 100%);
+  color: #fafafa;
+  --faint: #a3a3a3;
+}
+.dark .card-riva {
+  background: radial-gradient(125% 125% at 50% 10%, #fafafa 30%, #bbf7d0 75%, #4ade80 100%);
+  color: #0a0a0a;
+  --faint: #525252;
 }
