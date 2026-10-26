@@ -246,15 +246,7 @@
 .contrib[data-level="3"] { background: color-mix(in oklab, var(--foreground) 76%, var(--card)); }
 .contrib[data-level="4"] { background: var(--foreground); }
 
-/* Squares sized from the scroller's height: 7 rows and 6 gaps fill it */
+/* Squares sized from the scroller's height: the 14px month row, 7 rows and 7 gaps fill it */
 .heatmap { container-type: size; scrollbar-width: none; }
 .heatmap::-webkit-scrollbar { display: none; }
-.heatmap-grid { --cell: calc((100cqh - 12px) / 7); }
-
-/* Months and count show on hover; touch screens have no hover, so they always show there */
-.heatmap-meta { opacity: 0; transition: opacity 150ms ease; }
-.card:hover .heatmap-meta, .card:focus-within .heatmap-meta { opacity: 1; }
-@media (hover: none) {
-  .heatmap-meta { opacity: 1; }
-  .heatmap-strip { position: static; }
-}
+.heatmap-grid { --cell: calc((100cqh - 28px) / 7); }
