@@ -5,7 +5,7 @@ export const site = {
   intro: "I design and build apps end to end. Now learning to build with AI.",
   email: "email@domain.com",
   links: [
-    { label: "GitHub", href: "https://github.com/" },
+    { label: "GitHub", href: "https://github.com/NagaSaiRakshith2905" },
     { label: "LinkedIn", href: "https://www.linkedin.com/" },
     { label: "X", href: "https://x.com/" },
     { label: "Email", href: "mailto:email@domain.com" },
