@@ -61,7 +61,7 @@ export const phone: Stacked[] = [
   { id: "github", span: 2, rows: 3 },
   { id: "nav", span: 1, rows: 4 },
   { id: "toggle", span: 1, rows: 4 },
-  { id: "riva", span: 2, rows: 7, size: "lg" },
+  { id: "riva", span: 2, rows: 8, size: "lg" },
   { id: "tryRiva", span: 2, rows: 3 },
   { id: "projects", span: 1, rows: 6 },
   { id: "stack", span: 1, rows: 6 },

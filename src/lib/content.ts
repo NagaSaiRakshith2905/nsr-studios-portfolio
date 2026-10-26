@@ -20,6 +20,8 @@ export const site = {
 // A row in a list card. href starting with "/" stays on the site (⟶); anything else leaves it (↗).
 export type Item = { label: string; href?: string; prefix?: string; meta?: string }
 
+export type Platform = "android" | "web"
+
 export type CardContent = {
   label?: string
   title?: string
@@ -30,6 +32,8 @@ export type CardContent = {
   items?: Item[]
   more?: Item
   link?: Item
+  platforms?: Platform[]
+  stackLabel?: string
   kind?: "hero" | "nav" | "toggle" | "links" | "riva" | "github"
 }
 
@@ -49,6 +53,8 @@ export const cards = {
     title: "Riva",
     body: "Encrypted notes, passwords and files you share with family and friends.",
     meta: "Flutter, Next.js, Hono",
+    platforms: ["android", "web"],
+    stackLabel: "Tech stack",
     project: true,
   },
   tryRiva: {

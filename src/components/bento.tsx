@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react"
+import { Globe, Smartphone } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { cards, site, type CardId, type CardContent, type Item } from "@/lib/content"
+import { cards, site, type CardId, type CardContent, type Item, type Platform } from "@/lib/content"
 import type { Lines, Mark, Placed, Stacked, TitleSize } from "@/lib/layouts"
 import { FIELD } from "@/lib/dissolve"
 import { DissolveCanvas } from "@/components/dissolve-canvas"
@@ -12,6 +13,12 @@ const titleSizes: Record<TitleSize, string> = {
   base: "text-[16px]",
   md: "text-[20px]",
   lg: "text-[24px]",
+}
+
+// Lucide has no brand marks, so Android gets a generic phone
+const platforms: Record<Platform, { label: string; Icon: typeof Globe }> = {
+  android: { label: "Android", Icon: Smartphone },
+  web: { label: "Web", Icon: Globe },
 }
 
 const link =
@@ -28,6 +35,7 @@ function Card({ id, size, display = 80, className, style }: {
   // 12px puts Circle Grid's 0.125em dot pitch on 3 device px at 2x; 0.125em tracking = one empty dot column
   const top = c.label && <p className="font-hero text-[12px] leading-[1.3] tracking-[0.125em] uppercase text-faint">{c.label}</p>
   const titleClass = cn(titleSizes[size ?? (c.project ? "md" : "base")], "font-medium leading-[1.3] tracking-[-0.01em] text-balance whitespace-pre-line")
+  const subhead = (text: string) => <p className="mb-1.5 text-[10px] leading-[1.3] tracking-[0.125em] uppercase text-faint">{text}</p>
   const listClass = "flex flex-col gap-1 text-[13px] font-medium leading-[1.3] tracking-[-0.01em]"
 
   let main
@@ -99,7 +107,23 @@ function Card({ id, size, display = 80, className, style }: {
           {c.title && <Title className={titleClass}>{c.title}</Title>}
           {c.body && <p className="text-[13px] leading-[1.55] text-muted-foreground text-pretty whitespace-pre-line">{c.body}</p>}
         </div>
-        {c.meta && <p className={cn("text-[12px] leading-[1.3]", c.live ? "text-live" : "text-muted-foreground")}>{c.meta}</p>}
+        {c.platforms && (
+          <div>
+            {subhead("Platforms")}
+            <ul className="flex flex-wrap gap-x-3.5 gap-y-1.5 text-[12px] font-medium leading-[1.3]">
+              {c.platforms.map((p) => {
+                const { label, Icon } = platforms[p]
+                return <li key={p} className="inline-flex items-center gap-1.5"><Icon aria-hidden size={13} strokeWidth={1.8} />{label}</li>
+              })}
+            </ul>
+          </div>
+        )}
+        {c.meta && (
+          <div>
+            {c.stackLabel && subhead(c.stackLabel)}
+            <p className={cn("text-[12px] leading-[1.3]", c.live ? "text-live" : "text-muted-foreground")}>{c.meta}</p>
+          </div>
+        )}
       </div>
     )
   }
