@@ -13,7 +13,7 @@ const geistPixelCircle = GeistPixelCircle
 const circleGrid = localFont({ src: "./fonts/CircleGrid-Regular.otf", variable: "--font-circle-grid" })
 
 export const metadata: Metadata = {
-  title: "NSR",
+  title: "NSR Studios",
   description: "Developer learning to build with AI, one project at a time.",
 }
 
