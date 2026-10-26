@@ -239,11 +239,22 @@
   }
 }
 
-/* GitHub heatmap: steps of the live green over the card, so both themes follow their own --live */
-.contrib {
-  background: var(--border);
+/* GitHub heatmap: shades of the text colour over the card, so it inverts with the theme */
+.contrib { background: color-mix(in oklab, var(--foreground) 8%, var(--card)); }
+.contrib[data-level="1"] { background: color-mix(in oklab, var(--foreground) 30%, var(--card)); }
+.contrib[data-level="2"] { background: color-mix(in oklab, var(--foreground) 52%, var(--card)); }
+.contrib[data-level="3"] { background: color-mix(in oklab, var(--foreground) 76%, var(--card)); }
+.contrib[data-level="4"] { background: var(--foreground); }
+
+/* Squares sized from the scroller's height: 7 rows and 6 gaps fill it */
+.heatmap { container-type: size; scrollbar-width: none; }
+.heatmap::-webkit-scrollbar { display: none; }
+.heatmap-grid { --cell: calc((100cqh - 12px) / 7); }
+
+/* Months and count show on hover; touch screens have no hover, so they always show there */
+.heatmap-meta { opacity: 0; transition: opacity 150ms ease; }
+.card:hover .heatmap-meta, .card:focus-within .heatmap-meta { opacity: 1; }
+@media (hover: none) {
+  .heatmap-meta { opacity: 1; }
+  .heatmap-strip { position: static; }
 }
-.contrib[data-level="1"] { background: color-mix(in oklab, var(--live) 30%, var(--card)); }
-.contrib[data-level="2"] { background: color-mix(in oklab, var(--live) 55%, var(--card)); }
-.contrib[data-level="3"] { background: color-mix(in oklab, var(--live) 80%, var(--card)); }
-.contrib[data-level="4"] { background: color-mix(in oklab, var(--live) 100%, #0b5a16 35%); }

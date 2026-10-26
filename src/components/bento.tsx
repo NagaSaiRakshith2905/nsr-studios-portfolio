@@ -131,7 +131,7 @@ function Card({ id, size, display = 80, className, style }: {
   // The toggle button fills its card edge to edge, so the whole card is the hit area
   const justify = c.kind === "toggle" ? "" : c.kind === "nav" ? "justify-start" : top ? "justify-between" : "justify-end"
   return (
-    <article className={cn("card flex flex-col", c.kind === "github" ? "px-6 py-5" : c.kind !== "toggle" && "p-6", justify, c.kind === "riva" && "card-riva", className)} style={style}>
+    <article className={cn("card flex flex-col", c.kind === "github" ? "p-[3px]" : c.kind !== "toggle" && "p-6", justify, c.kind === "riva" && "card-riva", className)} style={style}>
       {top}
       {main}
     </article>

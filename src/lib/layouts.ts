@@ -58,7 +58,7 @@ export type Stacked = { id: CardId; span: 1 | 2; rows: number; size?: TitleSize 
 export const phone: Stacked[] = [
   { id: "hero", span: 2, rows: 7 },
   { id: "now", span: 2, rows: 4 },
-  { id: "github", span: 2, rows: 3 },
+  { id: "github", span: 2, rows: 4 },
   { id: "nav", span: 1, rows: 4 },
   { id: "toggle", span: 1, rows: 4 },
   { id: "riva", span: 2, rows: 8, size: "lg" },

@@ -32,7 +32,9 @@ export async function getContributions(): Promise<Calendar | null> {
   const login = process.env.GITHUB_USERNAME
   if (!token || !login) return null
   // Without from/to GitHub returns the rolling last 12 months, which differs from the profile
-  const year = new Date().getUTCFullYear()
+  const now = new Date()
+  const year = now.getUTCFullYear()
+  const today = now.toISOString().slice(0, 10)
 
   try {
     const res = await fetch("https://api.github.com/graphql", {
@@ -47,9 +49,14 @@ export async function getContributions(): Promise<Calendar | null> {
     return {
       year,
       total: cal.totalContributions,
-      weeks: cal.weeks.map((w: { contributionDays: { date: string; contributionCount: number; contributionLevel: keyof typeof levels }[] }) =>
-        w.contributionDays.map((d) => ({ date: d.date, count: d.contributionCount, level: levels[d.contributionLevel] })),
-      ),
+      weeks: cal.weeks
+        .map((w: { contributionDays: { date: string; contributionCount: number; contributionLevel: keyof typeof levels }[] }) =>
+          w.contributionDays
+            // Stop at today: GitHub also returns the rest of the year as empty days
+            .filter((d) => d.date <= today)
+            .map((d) => ({ date: d.date, count: d.contributionCount, level: levels[d.contributionLevel] })),
+        )
+        .filter((w: Day[]) => w.length),
     }
   } catch {
     return null
