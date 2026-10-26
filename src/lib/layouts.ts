@@ -14,8 +14,8 @@ export const desktop = {
     { id: "hero", x: 0, y: 0, w: 280, h: 280, display: 80 },
     { id: "nav", x: 280, y: 0, w: 120, h: 160 },
     { id: "toggle", x: 280, y: 160, w: 120, h: 120 },
-    { id: "now", x: 400, y: 0, w: 320, h: 160 },
-    { id: "github", x: 400, y: 160, w: 320, h: 120 },
+    { id: "github", x: 400, y: 0, w: 320, h: 160 },
+    { id: "now", x: 400, y: 160, w: 320, h: 120 },
     { id: "riva", x: 720, y: 0, w: 240, h: 400 },
     { id: "tryRiva", x: 720, y: 400, w: 240, h: 120 },
     { id: "projects", x: 0, y: 280, w: 160, h: 240 },
@@ -57,8 +57,8 @@ export const portrait = {
 export type Stacked = { id: CardId; span: 1 | 2; rows: number; size?: TitleSize }
 export const phone: Stacked[] = [
   { id: "hero", span: 2, rows: 7 },
-  { id: "now", span: 2, rows: 4 },
   { id: "github", span: 2, rows: 4 },
+  { id: "now", span: 2, rows: 4 },
   { id: "nav", span: 1, rows: 4 },
   { id: "toggle", span: 1, rows: 4 },
   { id: "riva", span: 2, rows: 8, size: "lg" },

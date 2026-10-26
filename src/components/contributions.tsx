@@ -26,31 +26,30 @@ export async function Contributions() {
 
   const label = cal ? `${cal.total} GitHub contributions in ${cal.year}` : "GitHub contributions"
   return (
-    <div className="relative flex h-full flex-col">
-      <HeatmapScroller label={label}>
-        <div className="heatmap-grid relative grid h-full w-max gap-[2px]"
-          style={{ gridTemplateRows: "repeat(7, var(--cell))", gridAutoColumns: "var(--cell)" }}>
-          {weeks.flatMap((week, i) => week.map((d, j) => {
-            // The first week of the year starts mid-week, so place each day on its weekday row
-            const row = d.date ? new Date(d.date).getUTCDay() : j
-            return (
-              <span key={`${i}-${row}`} className="contrib" data-level={d.level}
-                style={{ gridColumn: i + 1, gridRow: row + 1 }}
-                title={d.date ? `${d.count} on ${d.date}` : undefined} />
-            )
-          }))}
-          {months.map((m) => (
-            <span key={m.col} aria-hidden className="heatmap-meta absolute top-1 bg-card px-1 text-[11px] leading-[1.3]"
-              style={{ left: `calc(${m.col} * (var(--cell) + 2px))` }}>
-              {m.label}
-            </span>
-          ))}
-        </div>
-      </HeatmapScroller>
-      <div aria-hidden className="heatmap-meta heatmap-strip pointer-events-none absolute inset-x-0 bottom-0 flex items-baseline justify-between gap-2 bg-card px-3 pt-1.5 pb-1">
-        {/* Same treatment as the other cards' labels */}
+    <div className="flex h-full flex-col">
+      <div className="flex items-baseline justify-between gap-2 px-3 pt-2 pb-1">
         <p className="font-hero text-[12px] leading-[1.3] tracking-[0.125em] uppercase text-faint">GitHub</p>
         {cal && <p className="text-[12px] leading-[1.3]">{cal.total.toLocaleString("en-US")} in {cal.year}</p>}
+      </div>
+      <div className="flex min-h-0 flex-1 flex-col px-3 pb-2">
+        <HeatmapScroller label={label}>
+          <div className="heatmap-grid relative grid h-full w-max gap-[2px]"
+            style={{ gridTemplateRows: "14px repeat(7, var(--cell))", gridAutoColumns: "var(--cell)" }}>
+            {months.map((m) => (
+              <span key={m.col} aria-hidden className="whitespace-nowrap text-[11px] leading-[14px]"
+                style={{ gridColumn: m.col + 1, gridRow: 1 }}>{m.label}</span>
+            ))}
+            {weeks.flatMap((week, i) => week.map((d, j) => {
+              // The first week of the year starts mid-week, so place each day on its weekday row
+              const row = d.date ? new Date(d.date).getUTCDay() : j
+              return (
+                <span key={`${i}-${row}`} className="contrib" data-level={d.level}
+                  style={{ gridColumn: i + 1, gridRow: row + 2 }}
+                  title={d.date ? `${d.count} on ${d.date}` : undefined} />
+              )
+            }))}
+          </div>
+        </HeatmapScroller>
       </div>
     </div>
   )
