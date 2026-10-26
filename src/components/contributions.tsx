@@ -45,7 +45,7 @@ export async function Contributions() {
               return (
                 <span key={`${i}-${row}`} className="contrib" data-level={d.level}
                   style={{ gridColumn: i + 1, gridRow: row + 2 }}
-                  title={d.date ? `${d.count} on ${d.date}` : undefined} />
+                  data-date={d.date || undefined} data-count={d.date ? d.count : undefined} />
               )
             }))}
           </div>
