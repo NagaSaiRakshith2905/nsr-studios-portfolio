@@ -238,3 +238,12 @@
     }
   }
 }
+
+/* GitHub heatmap: steps of the live green over the card, so both themes follow their own --live */
+.contrib {
+  background: var(--border);
+}
+.contrib[data-level="1"] { background: color-mix(in oklab, var(--live) 30%, var(--card)); }
+.contrib[data-level="2"] { background: color-mix(in oklab, var(--live) 55%, var(--card)); }
+.contrib[data-level="3"] { background: color-mix(in oklab, var(--live) 80%, var(--card)); }
+.contrib[data-level="4"] { background: color-mix(in oklab, var(--live) 100%, #0b5a16 35%); }

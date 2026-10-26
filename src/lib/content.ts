@@ -30,7 +30,7 @@ export type CardContent = {
   items?: Item[]
   more?: Item
   link?: Item
-  kind?: "hero" | "nav" | "toggle" | "links" | "riva" | "empty"
+  kind?: "hero" | "nav" | "toggle" | "links" | "riva" | "github"
 }
 
 export const cards = {
@@ -43,7 +43,7 @@ export const cards = {
     meta: "● Public release Nov 8",
     live: true,
   },
-  empty: { kind: "empty" },
+  github: { kind: "github" },
   riva: {
     label: "01",
     title: "Riva",

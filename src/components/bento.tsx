@@ -5,6 +5,7 @@ import type { Lines, Mark, Placed, Stacked, TitleSize } from "@/lib/layouts"
 import { FIELD } from "@/lib/dissolve"
 import { DissolveCanvas } from "@/components/dissolve-canvas"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { Contributions } from "@/components/contributions"
 
 const titleSizes: Record<TitleSize, string> = {
   sm: "text-[14px]",
@@ -64,6 +65,8 @@ function Card({ id, size, display = 80, className, style }: {
     )
   } else if (c.kind === "toggle") {
     main = <ThemeToggle />
+  } else if (c.kind === "github") {
+    main = <Contributions />
   } else if (c.kind === "riva") {
     main = c.link && <ItemLink item={c.link} className={titleClass} />
   } else if (c.items) {
@@ -81,7 +84,7 @@ function Card({ id, size, display = 80, className, style }: {
         {c.more && <li className="mt-2"><ItemLink item={c.more} /></li>}
       </ul>
     )
-  } else if (c.kind !== "empty") {
+  } else {
     const Title = c.project ? "h2" : "p"
     main = (
       <div className="flex flex-col gap-4">
@@ -104,7 +107,7 @@ function Card({ id, size, display = 80, className, style }: {
   // The toggle button fills its card edge to edge, so the whole card is the hit area
   const justify = c.kind === "toggle" ? "" : c.kind === "nav" ? "justify-start" : top ? "justify-between" : "justify-end"
   return (
-    <article className={cn("card flex flex-col", c.kind !== "toggle" && "p-6", justify, c.kind === "riva" && "card-riva", className)} style={style}>
+    <article className={cn("card flex flex-col", c.kind === "github" ? "px-6 py-5" : c.kind !== "toggle" && "p-6", justify, c.kind === "riva" && "card-riva", className)} style={style}>
       {top}
       {main}
     </article>
